@@ -1,88 +1,64 @@
 import 'package:flutter/material.dart';
 import 'package:mealsapp/model/meals.dart';
-import 'package:mealsapp/widgets/meal_item_trait.dart';
-import 'package:transparent_image/transparent_image.dart';
 
-class MealItem extends StatelessWidget {
-  const MealItem({super.key, required this.meal,required this.onSelectMeal});
+class MealDetailsScreen extends StatelessWidget {
+  const MealDetailsScreen({super.key, required this.meal});
 
   final Meal meal;
 
-  final void Function(BuildContext context,Meal meal)onSelectMeal;
-  String  get complexityText {
-    return meal.complexity.name[0].toUpperCase() +meal.complexity.name.substring(1) ;
-
-  }
-   String  get AffordabilityText {
-    return meal.affordability.name[0].toUpperCase() +meal.affordability.name.substring(1) ;
-
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.all(8),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      clipBehavior: Clip.hardEdge,
-      elevation: 2,
-      child: InkWell(
-        onTap: () {
-
-          onSelectMeal(context,meal);
-        },
-        child: Stack(
-          children: [
-            FadeInImage(
-              placeholder: MemoryImage(kTransparentImage),
-              image: NetworkImage(meal.imageUrl),
-              fit: BoxFit.cover,
-              height: 200,
-              width: double.infinity,
-            ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                color: Colors.black54,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 6, vertical: 44),
-                child: Column(
-                  children: [
-                    Text(
-                      meal.title,
-                      maxLines: 2,
-                      textAlign: TextAlign.center,
-                      softWrap: true,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    ),
-                    const SizedBox(
-                      height: 12,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        MealItemTrait(
-                            icon: Icons.schedule, label: '${meal.duration} min'),
-                        const SizedBox( width: 12,),
-                              MealItemTrait(
-                            icon: Icons.work, label: complexityText ),
-
-                             MealItemTrait(
-                            icon: Icons.attach_money, label: AffordabilityText )
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            )
-          ],
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(meal.title),
         ),
-      ),
-    );
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Image.network(
+                meal.imageUrl,
+                height: 300,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
+              const SizedBox(
+                height: 14,
+              ),
+              Text(
+                'Ingredients',
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(
+                height: 14,
+              ),
+              for (final ingredient in meal.ingredients)
+                Text(ingredient,
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        color: Theme.of(context).colorScheme.onBackground)),
+              const SizedBox(
+                height: 14,
+              ),
+              Text(
+                'Steps',
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(
+                height: 14,
+              ),
+              for (final step in meal.steps)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 8),
+                  child: Text(step,
+                  textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                          color: Theme.of(context).colorScheme.onBackground)),
+                ),
+            ],
+          ),
+        ));
   }
 }
